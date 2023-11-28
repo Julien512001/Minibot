@@ -18,7 +18,7 @@
 
 // PID param
 #define Kp 2.0
-#define Ki 0.02
+#define Ki 0.05
 #define Kd 0
 
 long prevT = 0;
@@ -30,8 +30,8 @@ float eintegral_R = 0;
 
 int spiHandle;
 
-int target_speed_L;
-int target_speed_R;
+int target_speed_L = 30;
+int target_speed_R = 32;
 
 // Fonction toute faite 
 int convertToDecimal(unsigned char *dataList, int dataSize) {
@@ -85,7 +85,7 @@ void controlSpeed() {
     readEncoder(&current_speed_L, &current_speed_R);
 
     error_L = target_speed_L - current_speed_L;
-    error_R = target_speed_L - current_speed_L;
+    error_R = target_speed_R - current_speed_R;
 
     float P_L = error_L;
     float P_R = error_R;
@@ -169,8 +169,8 @@ int main() {
     gpioWrite(dR_PIN, 0);
 
     //scanf("Entrer une valeur de référence : %d\n", target_speed);
-    target_speed_L = 30;
-    target_speed_R = 30;
+    //target_speed_L = 60;
+    //target_speed_R = 60;
     runMotors(5000);
 
     spiClose(spiHandle);
