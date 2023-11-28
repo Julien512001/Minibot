@@ -3,11 +3,11 @@
 #include <unistd.h>
 #include <pigpio.h>
 
-// gcc -o Controller_L Controller_L.c -lpigpio -lrt -lpthread -lm
+// gcc -o leftmotor LeftMotorControl.c -lpigpio -lrt -lpthread -lm
 
 // SPI param
 #define SPI_CHANNEL 1
-#define SPI_SPEED   1000000 // Vitesse de transmission en Hz
+#define SPI_SPEED   500000 // Vitesse de transmission en Hz
 
 // Pin param
 #define PWM_PIN_L 12    //PWM1 -> M1PWM
@@ -25,7 +25,7 @@ float eintegral = 0;
 
 int spiHandle;
 
-int target_speed;
+int target_speed = 61;
 
 
 // Fonction toute faite 
@@ -49,13 +49,14 @@ int convertToDecimal(unsigned char *dataList, int dataSize) {
 // Lecture de la valeur de l'encodeur gauche
 void readEncoder(int *current_speed) {
 
-    char txData[] = {0x10,0x00, 0x00, 0x00, 0x00};
+    char txData[] = {0x0F,0x00, 0x00, 0x00, 0x00};
     char rxData[5];
 
     spiXfer(spiHandle, txData, rxData, sizeof(txData));
 
     int dataSize = sizeof(rxData) / sizeof(rxData[0]);
-    int *current_speed = abs(convertToDecimal(rxData, dataSize));
+    *current_speed = abs(convertToDecimal(rxData, dataSize));
+    printf("%d\n", *current_speed);
 }
 
 
@@ -130,7 +131,7 @@ int main() {
 
     gpioWrite(dL_PIN, 1);
 
-    scanf("Entrer une valeur de référence : %d\n", target_speed);
+    //scanf("Entrer une valeur de référence : %d\n", target_speed);
 
     runMotors();
 
