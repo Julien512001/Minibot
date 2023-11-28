@@ -16,6 +16,8 @@
 #define dR_PIN 6
 #define ENCODER_PIN 17  // Remplacez ceci par le bon numéro de GPIO pour votre encodeur
 
+FILE* fp;
+
 // PID param
 #define Kp 2.0
 #define Ki 0.05
@@ -30,8 +32,8 @@ float eintegral_R = 0;
 
 int spiHandle;
 
-int target_speed_L = 30;
-int target_speed_R = 32;
+int target_speed_L = 60;
+int target_speed_R = 60;
 
 // Fonction toute faite 
 int convertToDecimal(unsigned char *dataList, int dataSize) {
@@ -45,7 +47,7 @@ int convertToDecimal(unsigned char *dataList, int dataSize) {
         decimalValue <<= 8; // Décalage de 8 bits vers la gauche
         decimalValue += dataList[i];
     }
-
+    
     // Appliquer le signe
     return decimalValue * sign;
 }
@@ -67,6 +69,7 @@ void readEncoder(int *current_speed_L, int *current_speed_R) {
     int dataSizeR = sizeof(rxDataR) / sizeof(rxDataR[0]);
     *current_speed_L = abs(convertToDecimal(rxDataL, dataSizeL));
     *current_speed_R = abs(convertToDecimal(rxDataR, dataSizeR));
+    fprintf(fp,"%d\n", *current_speed_L);
     printf("%d, %d\n", *current_speed_L, *current_speed_R);
 }
 
@@ -168,13 +171,16 @@ int main() {
     gpioWrite(dL_PIN, 1);
     gpioWrite(dR_PIN, 0);
 
+    fp = fopen("Speed.txt", "a");
+
     //scanf("Entrer une valeur de référence : %d\n", target_speed);
     //target_speed_L = 60;
     //target_speed_R = 60;
-    runMotors(5000);
+    runMotors(10000);
 
     spiClose(spiHandle);
     gpioTerminate();
+    fclose(fp);
 
     return 0;
 }

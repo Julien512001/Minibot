@@ -3,11 +3,11 @@
 #include <unistd.h>
 #include <pigpio.h>
 
-// gcc -o Controller_L Controller_L.c -lpigpio -lrt -lpthread -lm
+// gcc -o control MotorControl.c -lpigpio -lrt -lpthread -lm
 
 // SPI param
 #define SPI_CHANNEL 1
-#define SPI_SPEED   1000000 // Vitesse de transmission en Hz
+#define SPI_SPEED   500000 // Vitesse de transmission en Hz
 
 // Pin param
 #define PWM_PIN_L 12    //PWM1 -> M1PWM

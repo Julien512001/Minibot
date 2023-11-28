@@ -17,7 +17,7 @@
 // PID param
 #define Kp 2.0
 #define Ki 0.02
-#define Kd 0
+#define Kd 0.0
 
 long prevT = 0;
 float previous_error = 0;
