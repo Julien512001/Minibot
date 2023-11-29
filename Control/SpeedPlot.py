@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
     # Lecture du fichier et conversion des lignes en entiers
-with open("Control/Speed.txt", 'r') as file:
+with open("Speed.txt", 'r') as file:
     content = file.readlines()
     integers_list = [int(line.strip()) for line in content]
 

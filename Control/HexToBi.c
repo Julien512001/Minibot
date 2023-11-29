@@ -36,7 +36,7 @@ void readEncoder(int *current_speed) {
     spiXfer(spiHandle, txData, rxData, sizeof(txData));
 
     int dataSize = sizeof(rxData) / sizeof(rxData[0]);
-    *current_speed = abs(convertToDecimal(rxData, dataSize));
+    *current_speed = convertToDecimal(rxData, dataSize);
     printf("%d\n", *current_speed);
 }
 
@@ -58,6 +58,7 @@ int main(void) {
     int current_speed;
     for (int i = 0; i < 1000; i++) {
         readEncoder(&current_speed);
+        sleep(1);
     }
     
 

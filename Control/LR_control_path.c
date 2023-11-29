@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <pigpio.h>
 
-// gcc -o LR LR_control.c -lpigpio -lrt -lpthread -lm
+// gcc -o path LR_control_path.c -lpigpio -lrt -lpthread -lm
 
 // SPI param
 #define SPI_CHANNEL 1
@@ -19,9 +19,9 @@
 FILE* fp;
 
 // PID param
-#define Kp 2.0
-#define Ki 0.05
-#define Kd 0
+#define Kp 5.0
+#define Ki 0.01
+#define Kd 0.5
 
 long prevT = 0;
 float previous_error_L = 0;
@@ -71,7 +71,7 @@ void readEncoder(int *current_speed_L, int *current_speed_R) {
     int speed_R = convertToDecimal(rxDataR, dataSizeR);
     *current_speed_L = abs(speed_L);
     *current_speed_R = abs(speed_R);
-    //fprintf(fp,"%d\n", *current_speed_L);
+    fprintf(fp,"%d, %d\n", speed_L, speed_R);
     printf("%d, %d\n", speed_L, speed_R);
 }
 
@@ -136,21 +136,6 @@ void initPWM() {
     usleep(10000);
 }
 
-void runMotors(int cycle, int target_speed_L, int target_speed_R) {
-    unsigned int start_time = gpioTick();
-    unsigned int elapsed_time = 0;
-
-    while (elapsed_time < cycle) {
-        controlSpeed(target_speed_L, target_speed_R);
-
-        elapsed_time = (gpioTick() - start_time) / 1000;
-        sleep(0.05);
-    }
-
-    gpioPWM(PWM_PIN_L, 0);
-    gpioPWM(PWM_PIN_R, 0);
-}
-
 void Direction(int target_speed_L, int target_speed_R) {
 
     int dL;
@@ -163,12 +148,34 @@ void Direction(int target_speed_L, int target_speed_R) {
     gpioWrite(dR_PIN, dR);
 }
 
+void runMotors(int cycle, float step, int *target_speed_L, int *target_speed_R) {
+    unsigned int start_time = gpioTick();
+    unsigned int elapsed_time = 0;
+    int i = 0;
+    while (i < cycle) {
+
+        Direction(target_speed_L[i], target_speed_R[i]);
+
+        controlSpeed(abs(target_speed_L[i]), abs(target_speed_R[i]));
+
+        elapsed_time = (gpioTick() - start_time) / 1000;
+        sleep(step);
+        i++;
+    }
+
+    gpioPWM(PWM_PIN_L, 0);
+    gpioPWM(PWM_PIN_R, 0);
+}
+
+
+
 int main() {
     
     if (gpioInitialise() < 0) {
         fprintf(stderr, "Échec de l'initialisation de pigpio.\n");
         exit(1);
     }
+    int time = 30000;
 
     spiHandle = spiOpen(SPI_CHANNEL, SPI_SPEED, 0);
     if (spiHandle < 0)
@@ -181,18 +188,32 @@ int main() {
     initPWM();
 
     fp = fopen("Speed.txt", "a");
+    int *target_speed_L;
+    int *target_speed_R;
 
-    //scanf("Entrer une valeur de référence : %d\n", target_speed);
-    int target_speed_L = -30;
-    int target_speed_R = -30;
+    target_speed_L = malloc(time*sizeof(int));
+    target_speed_R = malloc(time*sizeof(int));
 
-    Direction(target_speed_L, target_speed_R);
+    for (int i = 0; i < time; i++) {
+        if (i < time/2) {
+            target_speed_L[i] = 30;
+            target_speed_R[i] = 30;
+        } 
+        else {
+            target_speed_L[i] = 30;
+            target_speed_R[i] = 40;
+        }
+    }
 
-    runMotors(10000, abs(target_speed_L), abs(target_speed_R));
+    float step = 0.1;
+
+    runMotors(time, step, target_speed_L, target_speed_R);
 
     spiClose(spiHandle);
     gpioTerminate();
     fclose(fp);
+    free(target_speed_L);
+    free(target_speed_R);
 
     return 0;
 }
