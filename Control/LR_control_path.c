@@ -3,6 +3,9 @@
 #include <unistd.h>
 #include <pigpio.h>
 
+
+#define M_PI  3.14
+#define TS 0.01
 // gcc -o path LR_control_path.c -lpigpio -lrt -lpthread -lm
 
 // SPI param
@@ -19,9 +22,9 @@
 FILE* fp;
 
 // PID param
-#define Kp 5.0
+#define Kp 2.0
 #define Ki 0.01
-#define Kd 0.5
+#define Kd 0
 
 long prevT = 0;
 float previous_error_L = 0;
@@ -54,7 +57,7 @@ int convertToDecimal(unsigned char *dataList, int dataSize) {
 
 
 // Lecture de la valeur de l'encodeur gauche
-void readEncoder(int *current_speed_L, int *current_speed_R) {
+void readEncoder(float *current_speed_L, float *current_speed_R) {
 
     char txDataL[] = {0x0F,0x00, 0x00, 0x00, 0x00};
     char rxDataL[5];
@@ -67,22 +70,24 @@ void readEncoder(int *current_speed_L, int *current_speed_R) {
 
     int dataSizeL = sizeof(rxDataL) / sizeof(rxDataL[0]);
     int dataSizeR = sizeof(rxDataR) / sizeof(rxDataR[0]);
-    int speed_L = convertToDecimal(rxDataL, dataSizeL);
-    int speed_R = convertToDecimal(rxDataR, dataSizeR);
+    int tick_L = (float) convertToDecimal(rxDataL, dataSizeL);
+    int tick_R = (float) convertToDecimal(rxDataR, dataSizeR);
+    float speed_L = tick_L/64.0 * 2.0*M_PI / TS;
+    float speed_R = tick_R/64.0 * 2.0*M_PI / TS;
     *current_speed_L = abs(speed_L);
     *current_speed_R = abs(speed_R);
-    fprintf(fp,"%d, %d\n", speed_L, speed_R);
-    printf("%d, %d\n", speed_L, speed_R);
+    fprintf(fp,"%f, %f\n", speed_L, speed_R);
+    printf("%f, %d, %f, %d\n", speed_L, tick_L, speed_R, tick_R);
 }
 
 
 // code comme en arduino
-void controlSpeed(int target_speed_L, int target_speed_R) {
+void controlSpeed(float target_speed_L, float target_speed_R) {
     int PWM_value_L;
     int PWM_value_R;
 
-    int current_speed_L;
-    int current_speed_R;
+    float current_speed_L = 0.0;
+    float current_speed_R = 0.0;
 
     float error_L, error_R, integral_L, integral_R, derivative_L, derivative_R;
     long currentTime, elapsedTime;
@@ -136,7 +141,7 @@ void initPWM() {
     usleep(10000);
 }
 
-void Direction(int target_speed_L, int target_speed_R) {
+void Direction(float target_speed_L, float target_speed_R) {
 
     int dL;
     int dR;
@@ -148,7 +153,7 @@ void Direction(int target_speed_L, int target_speed_R) {
     gpioWrite(dR_PIN, dR);
 }
 
-void runMotors(int cycle, float step, int *target_speed_L, int *target_speed_R) {
+void runMotors(int cycle, float step, float *target_speed_L, float *target_speed_R) {
     unsigned int start_time = gpioTick();
     unsigned int elapsed_time = 0;
     int i = 0;
@@ -188,24 +193,25 @@ int main() {
     initPWM();
 
     fp = fopen("Speed.txt", "a");
-    int *target_speed_L;
-    int *target_speed_R;
+    float *target_speed_L;
+    float *target_speed_R;
 
-    target_speed_L = malloc(time*sizeof(int));
-    target_speed_R = malloc(time*sizeof(int));
+    target_speed_L = malloc(time*sizeof(float));
+    target_speed_R = malloc(time*sizeof(float));
 
     for (int i = 0; i < time; i++) {
         if (i < time/2) {
-            target_speed_L[i] = 30;
-            target_speed_R[i] = 30;
+            target_speed_L[i] = 500;
+            target_speed_R[i] = 500;
         } 
         else {
-            target_speed_L[i] = 30;
-            target_speed_R[i] = 40;
+            target_speed_L[i] = -500;
+            target_speed_R[i] = 500;
         }
     }
 
-    float step = 0.1;
+
+    float step = 0.05;
 
     runMotors(time, step, target_speed_L, target_speed_R);
 
