@@ -23,7 +23,7 @@ FILE* fp;
 
 // PID param
 #define Kp 2.0
-#define Ki 0.01
+#define Ki 0.001
 #define Kd 0
 
 long prevT = 0;
