@@ -85,6 +85,8 @@ void readEncoder(float *current_speed_L, float *current_speed_R) {
 void controlSpeed(float target_speed_L, float target_speed_R, float step) {
     int PWM_value_L;
     int PWM_value_R;
+    float V_value_L;
+    float V_value_R;
 
     float current_speed_L = 0.0;
     float current_speed_R = 0.0;
@@ -122,8 +124,8 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
     if (V_value_R < 0) V_value_R = 0;
     else if (V_value_R > 12) V_value_R = 12;
 
-    PWM_value_L = V_value_L * 1000/12;
-    PWM_value_R = V_value_R * 1000/12;
+    PWM_value_L = (int) V_value_L * 1000/12;
+    PWM_value_R = (int) V_value_R * 1000/12;
 
     gpioPWM(PWM_PIN_L, PWM_value_L);
     gpioPWM(PWM_PIN_R, PWM_value_R);
