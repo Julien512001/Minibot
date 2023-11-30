@@ -23,7 +23,7 @@ FILE* fp;
 
 // PID param
 #define Kp 2.0
-#define Ki 0.01
+#define Ki 1.0
 #define Kd 0
 
 long prevT = 0;
@@ -82,7 +82,7 @@ void readEncoder(float *current_speed_L, float *current_speed_R) {
 
 
 // code comme en arduino
-void controlSpeed(float target_speed_L, float target_speed_R) {
+void controlSpeed(float target_speed_L, float target_speed_R, float step) {
     int PWM_value_L;
     int PWM_value_R;
 
@@ -100,16 +100,16 @@ void controlSpeed(float target_speed_L, float target_speed_R) {
     float P_L = error_L;
     float P_R = error_R;
 
-    eintegral_L += error_L;
+    eintegral_L += error_L*step;
     float I_L = eintegral_L;
 
-    eintegral_R += error_R;
+    eintegral_R += error_R*step;
     float I_R = eintegral_R;
 
-    derivative_L = (error_L - previous_error_L);
+    derivative_L = (error_L - previous_error_L)/step;
     float D_L = derivative_L;
 
-    derivative_R = (error_R - previous_error_R);
+    derivative_R = (error_R - previous_error_R)/step;
     float D_R = derivative_R;
 
     PWM_value_L = P_L * Kp + I_L * Ki + D_L * Kd;
@@ -161,7 +161,7 @@ void runMotors(int cycle, float step, float *target_speed_L, float *target_speed
 
         Direction(target_speed_L[i], target_speed_R[i]);
 
-        controlSpeed(abs(target_speed_L[i]), abs(target_speed_R[i]));
+        controlSpeed(abs(target_speed_L[i]), abs(target_speed_R[i]), step);
 
         elapsed_time = (gpioTick() - start_time) / 1000;
         sleep(step);
@@ -201,12 +201,12 @@ int main() {
 
     for (int i = 0; i < time; i++) {
         if (i < time/2) {
-            target_speed_L[i] = 500;
-            target_speed_R[i] = 500;
+            target_speed_L[i] = 300;
+            target_speed_R[i] = 300;
         } 
         else {
-            target_speed_L[i] = -500;
-            target_speed_R[i] = 500;
+            target_speed_L[i] = -300;
+            target_speed_R[i] = 300;
         }
     }
 
