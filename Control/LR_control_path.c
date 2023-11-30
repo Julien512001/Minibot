@@ -23,7 +23,7 @@ FILE* fp;
 
 // PID param
 #define Kp 2.0
-#define Ki 1.0
+#define Ki 100
 #define Kd 0
 
 long prevT = 0;
@@ -77,7 +77,7 @@ void readEncoder(float *current_speed_L, float *current_speed_R) {
     *current_speed_L = abs(speed_L);
     *current_speed_R = abs(speed_R);
     fprintf(fp,"%f, %f\n", speed_L, speed_R);
-    printf("%f, %d, %f, %d\n", speed_L, tick_L, speed_R, tick_R);
+    printf("%f, %d, %f, %d, ", speed_L, tick_L, speed_R, tick_R);
 }
 
 
@@ -118,11 +118,13 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
     V_value_R = P_R * Kp + I_R * Ki + D_R * Kd;
 
 
-    if (PWM_value_L < 0) V_value_L = 0;
-    else if (PWM_value_L > 12) V_value_L = 12;
+    if (V_value_L < 0) V_value_L = 0;
+    else if (V_value_L > 12) V_value_L = 12;
 
     if (V_value_R < 0) V_value_R = 0;
     else if (V_value_R > 12) V_value_R = 12;
+
+    printf("%f, %f\n", V_value_L, V_value_R);
 
     PWM_value_L = (int) V_value_L * 1000/12;
     PWM_value_R = (int) V_value_R * 1000/12;
