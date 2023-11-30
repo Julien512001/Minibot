@@ -80,6 +80,17 @@ void readEncoder(float *current_speed_L, float *current_speed_R) {
     printf("%f, %d, %f, %d, ", speed_L, tick_L, speed_R, tick_R);
 }
 
+void Direction(float current_speed_L, float current_speed_right) {
+
+    int dL;
+    int dR;
+
+    dL = (target_speed_L >= 0) ? 1:0; // Inversé car moteur gauche monté à l'envers
+    dR = (target_speed_R >= 0) ? 0:1;
+
+    gpioWrite(dL_PIN, dL);
+    gpioWrite(dR_PIN, dR);
+}
 
 // code comme en arduino
 void controlSpeed(float target_speed_L, float target_speed_R, float step) {
@@ -120,16 +131,18 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
 
     printf("%f, %f, ", V_value_L, V_value_R);
 
-    if (V_value_L < 0) V_value_L = 0;
+    if (V_value_L < -12) V_value_L = -12;
     else if (V_value_L > 12) V_value_L = 12;
 
-    if (V_value_R < 0) V_value_R = 0;
+    if (V_value_R < -12) V_value_R = -12;
     else if (V_value_R > 12) V_value_R = 12;
+
+    Direction(V_value_L, V_value_R);
 
     printf("%f, %f\n", V_value_L, V_value_R);
 
-    PWM_value_L = (int) abs(V_value_L) * 1000/12;
-    PWM_value_R = (int) abs(V_value_R) * 1000/12;
+    PWM_value_L = (int) abs(V_value_L)/12 * 1000;
+    PWM_value_R = (int) abs(V_value_R)/12 * 1000;
 
     gpioPWM(PWM_PIN_L, PWM_value_L);
     gpioPWM(PWM_PIN_R, PWM_value_R);
@@ -150,17 +163,7 @@ void initPWM() {
     usleep(10000);
 }
 
-void Direction(float target_speed_L, float target_speed_R) {
 
-    int dL;
-    int dR;
-
-    dL = (target_speed_L >= 0) ? 1:0; // Inversé car moteur gauche monté à l'envers
-    dR = (target_speed_R >= 0) ? 0:1;
-
-    gpioWrite(dL_PIN, dL);
-    gpioWrite(dR_PIN, dR);
-}
 
 void runMotors(int cycle, float step, float *target_speed_L, float *target_speed_R) {
     unsigned int start_time = gpioTick();
