@@ -173,7 +173,6 @@ void runMotors(int cycle, float step, float *target_speed_L, float *target_speed
 }
 
 
-
 int main() {
     
     if (gpioInitialise() < 0) {
@@ -205,8 +204,8 @@ int main() {
             target_speed_R[i] = 300;
         } 
         else {
-            target_speed_L[i] = -300;
-            target_speed_R[i] = 300;
+            target_speed_L[i] = -300.0;
+            target_speed_R[i] = -300.0;
         }
     }
 
