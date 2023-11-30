@@ -1,0 +1,1 @@
+Segmentation fault : accès à un endroit de la mémoire à laquelle on a rien à faire
