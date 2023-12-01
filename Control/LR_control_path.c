@@ -72,8 +72,8 @@ void readEncoder(float *current_speed_L, float *current_speed_R) {
     int dataSizeR = sizeof(rxDataR) / sizeof(rxDataR[0]);
     int tick_L = (float) convertToDecimal(rxDataL, dataSizeL);
     int tick_R = (float) convertToDecimal(rxDataR, dataSizeR);
-    float speed_L = tick_L/64.0 * 2.0*M_PI / TS;
-    float speed_R = tick_R/64.0 * 2.0*M_PI / TS;
+    float speed_L = tick_L/64.0 * 2.0*M_PI/TS;
+    float speed_R = tick_R/64.0 * 2.0*M_PI/TS;
     *current_speed_L = abs(speed_L);
     *current_speed_R = abs(speed_R);
     //fprintf(fp,"%f, %f\n", speed_L, speed_R);
@@ -212,8 +212,8 @@ int main() {
 
     for (int i = 0; i < time; i++) {
         if (i < time/2) {
-            target_speed_L[i] = 300;
-            target_speed_R[i] = 300;
+            target_speed_L[i] = 300.0;
+            target_speed_R[i] = 300.0;
         } 
         else {
             target_speed_L[i] = -300.0;

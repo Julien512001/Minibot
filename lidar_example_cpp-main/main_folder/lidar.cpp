@@ -1,6 +1,7 @@
 #include "lidar.h"
 
 
+
 ILidarDriver* connectLidar(){
 
   ILidarDriver* lidar;
@@ -11,8 +12,10 @@ ILidarDriver* connectLidar(){
     	printf("Connected\n");
 
     	lidar->setMotorSpeed();
-      //RplidarScanMode scanMode;
-      //lidar->startScan(false, true, 0, &scanMode);
+      LidarScanMode scanMode;
+      lidar->startScan(false, true, 0, &scanMode);
+
+
       return lidar;
     }
     printf("Connection failed\n");

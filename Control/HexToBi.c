@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pigpio.h>
+#include <math.h>
 
+
+//#define M_PI 3.14
+#define TS 0.01
 // gcc -o Hex HexToBi.c -lpigpio -lrt -lpthread -lm
 
 // SPI param
@@ -36,7 +40,7 @@ void readEncoder(int *current_speed) {
     spiXfer(spiHandle, txData, rxData, sizeof(txData));
 
     int dataSize = sizeof(rxData) / sizeof(rxData[0]);
-    *current_speed = convertToDecimal(rxData, dataSize);
+    *current_speed = convertToDecimal(rxData, dataSize)/64.0 * 2.0*M_PI/TS * 1/30.0;
     printf("%d\n", *current_speed);
 }
 
