@@ -9,30 +9,38 @@ using namespace sl;
 
 int main(int argc, const char * argv[]){
 
-  int res;
   ILidarDriver *lidar;
 	lidar = connectLidar();
+  FILE* fp;
+  fp = fopen("Speed.txt", "a");
 
+  sl_result res;
   while(true) {
-    sl_lidar_response_measurement_node_hq_t local_buf[256];
-  size_t count;
 
-  //lidar->startScan(1,1,0,nullptr);
-  lidar->grabScanDataHq(local_buf, count);
-  sl_lidar_response_measurement_node_hq_t nodes[8192];
-  size_t nodeCount = sizeof(nodes)/sizeof(sl_lidar_response_measurement_node_hq_t);
-  res = lidar->grabScanDataHq(nodes, nodeCount);
 
-  if (res != 0) {
-    fprintf(stderr, "Failed to get data");
-  }
 
-  float angle_in_degrees   = nodes->angle_z_q14 * 90.f / (1 << 14);
-  float distance_in_meters = nodes->dist_mm_q2 / 1000.f / (1 << 2);
 
-  printf("%f\n", angle_in_degrees);
-  printf("%f\n", distance_in_meters);
-  }
+    sl_lidar_response_measurement_node_hq_t nodes[8192];
+    size_t nodeCount = sizeof(nodes)/sizeof(sl_lidar_response_measurement_node_hq_t);
+    res = lidar->grabScanDataHq(nodes, nodeCount);
+    
+    if (SL_IS_OK(res)) {
+      lidar->ascendScanData(nodes, nodeCount);
+      for (int pos = 0; pos < (int)nodeCount ; ++pos) {
+          printf("%s theta: %f Dist: %f Q: %d \n", 
+                (nodes[pos].flag & SL_LIDAR_RESP_HQ_FLAG_SYNCBIT) ?"S ":"  ", 
+                (nodes[pos].angle_z_q14 * 90.f) / (1<<14),
+                nodes[pos].dist_mm_q2/1000.f/(1<<2),
+                nodes[pos].quality >> SL_LIDAR_RESP_MEASUREMENT_QUALITY_SHIFT);
+          fprintf(fp,"%s theta: %f Dist: %f Q: %d \n", 
+                (nodes[pos].flag & SL_LIDAR_RESP_HQ_FLAG_SYNCBIT) ?"S ":"  ", 
+                (nodes[pos].angle_z_q14 * 90.f) / (1<<14),
+                nodes[pos].dist_mm_q2/1000.f/(1<<2),
+                nodes[pos].quality >> SL_LIDAR_RESP_MEASUREMENT_QUALITY_SHIFT);
+        }
+      }
+    }
+  fclose(fp);
 
   
 	disconnectLidar(lidar);

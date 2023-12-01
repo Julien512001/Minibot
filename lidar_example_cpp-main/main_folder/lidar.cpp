@@ -29,3 +29,5 @@ void disconnectLidar(ILidarDriver* lidar){
     lidar->setMotorSpeed(0);
     delete lidar;
 }
+
+
