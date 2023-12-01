@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <pigpio.h>
 
+//This controller calculate the error of the speed and calculate a voltage between -12V and 12V
 
 #define M_PI  3.14
 #define TS 0.01
