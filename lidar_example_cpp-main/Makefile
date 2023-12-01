@@ -42,4 +42,10 @@ all: make_subs
 
 include $(HOME_TREE)/mak_common.inc
 
+PROGRAM_PATH := output/Linux/Release/main_folder
+
+run: main_folder
+	sudo ./$(PROGRAM_PATH)
+
 clean: make_subs
+	rm -rf output obj

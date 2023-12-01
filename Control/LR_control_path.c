@@ -23,7 +23,7 @@ FILE* fp;
 
 // PID param
 #define Kp 2.0
-#define Ki 0.01
+#define Ki 0.05
 #define Kd 0
 
 long prevT = 0;
@@ -76,8 +76,8 @@ void readEncoder(float *current_speed_L, float *current_speed_R) {
     float speed_R = tick_R/64.0 * 2.0*M_PI / TS;
     *current_speed_L = abs(speed_L);
     *current_speed_R = abs(speed_R);
-    fprintf(fp,"%f, %f\n", speed_L, speed_R);
-    printf("%f, %d, %f, %d, ", speed_L, tick_L, speed_R, tick_R);
+    //fprintf(fp,"%f, %f\n", speed_L, speed_R);
+    printf("speed_L : %f, speed_R : %f, ", speed_L, speed_R);
 }
 
 
@@ -98,7 +98,7 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
 
     error_L = target_speed_L - current_speed_L;
     error_R = target_speed_R - current_speed_R;
-    printf("error_L = %f, error_R = %f, ", error_L, error_R);
+    printf("error_L : %f, error_R : %f, ", error_L, error_R);
 
     float P_L = error_L;
     float P_R = error_R;
@@ -120,19 +120,22 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
 
     printf("%f, %f, ", V_value_L, V_value_R);
 
-    if (V_value_L < 0) V_value_L = 0;
-    else if (V_value_L > 12) V_value_L = 12;
+    int saturation_L = 0;
+    int saturation_H = 1000;
 
-    if (V_value_R < 0) V_value_R = 0;
-    else if (V_value_R > 12) V_value_R = 12;
+    if (V_value_L < saturation_L) V_value_L = saturation_L;
+    else if (V_value_L > saturation_H) V_value_L = 1000;
+
+    if (V_value_R < saturation_L) V_value_R = 0;
+    else if (V_value_R > saturation_H) V_value_R = 1000;
 
     printf("%f, %f\n", V_value_L, V_value_R);
 
-    PWM_value_L = (int) abs(V_value_L) * 1000/12;
-    PWM_value_R = (int) abs(V_value_R) * 1000/12;
+    PWM_value_L = (int) V_value_L * 1000/12;
+    PWM_value_R = (int) V_value_R * 1000/12;
 
-    gpioPWM(PWM_PIN_L, PWM_value_L);
-    gpioPWM(PWM_PIN_R, PWM_value_R);
+    gpioPWM(PWM_PIN_L, (int) V_value_L);
+    gpioPWM(PWM_PIN_R, (int) V_value_R);
 
     previous_error_L = error_L;
     previous_error_R = error_R;

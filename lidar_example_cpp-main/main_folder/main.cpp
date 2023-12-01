@@ -13,8 +13,19 @@ int main(int argc, const char * argv[]){
 	lidar = connectLidar();
 
 
+  sl_lidar_response_measurement_node_hq_t local_buf[256];
+  size_t count;
+
+  //lidar->startScan(1,1,0,nullptr);
+  lidar->grabScanDataHq(local_buf, count);
+
   
+
+  for (int i = 0; i < 0; i++) {
+    printf("%lf\n", (double) local_buf[i]);
+  }
+
 	disconnectLidar(lidar);
 
-    return 0;
+  return 0;
 }
