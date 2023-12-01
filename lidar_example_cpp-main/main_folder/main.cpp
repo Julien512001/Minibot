@@ -13,7 +13,8 @@ int main(int argc, const char * argv[]){
   ILidarDriver *lidar;
 	lidar = connectLidar();
 
-  sl_lidar_response_measurement_node_hq_t local_buf[256];
+  while(true) {
+    sl_lidar_response_measurement_node_hq_t local_buf[256];
   size_t count;
 
   //lidar->startScan(1,1,0,nullptr);
@@ -21,6 +22,7 @@ int main(int argc, const char * argv[]){
   sl_lidar_response_measurement_node_hq_t nodes[8192];
   size_t nodeCount = sizeof(nodes)/sizeof(sl_lidar_response_measurement_node_hq_t);
   res = lidar->grabScanDataHq(nodes, nodeCount);
+
   if (res != 0) {
     fprintf(stderr, "Failed to get data");
   }
@@ -28,11 +30,11 @@ int main(int argc, const char * argv[]){
   float angle_in_degrees   = nodes->angle_z_q14 * 90.f / (1 << 14);
   float distance_in_meters = nodes->dist_mm_q2 / 1000.f / (1 << 2);
 
-
-
   printf("%f\n", angle_in_degrees);
   printf("%f\n", distance_in_meters);
+  }
 
+  
 	disconnectLidar(lidar);
 
   return 0;
