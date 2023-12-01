@@ -211,12 +211,12 @@ int main() {
 
     for (int i = 0; i < time; i++) {
         if (i < time/2) {
-            target_speed_L[i] = 300.0;
-            target_speed_R[i] = 300.0;
+            target_speed_L[i] = 30.0;
+            target_speed_R[i] = 30.0;
         } 
         else {
-            target_speed_L[i] = -300.0;
-            target_speed_R[i] = -300.0;
+            target_speed_L[i] = -30.0;
+            target_speed_R[i] = -30.0;
         }
     }
 
