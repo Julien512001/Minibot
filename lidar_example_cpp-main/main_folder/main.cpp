@@ -4,6 +4,7 @@
 #include "sl_lidar.h"
 #include "sl_lidar_driver.h"
 #include "lidar.h"
+#include "cluster.h"
 
 using namespace sl;
 

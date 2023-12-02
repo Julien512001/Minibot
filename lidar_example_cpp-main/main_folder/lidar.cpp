@@ -32,7 +32,7 @@ void disconnectLidar(ILidarDriver* lidar){
 
 void myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, FILE* fp) {
 
-  int rotationCount = 10;
+  int rotationCount = 1;
   int i = 0;
 
   sl_result res;

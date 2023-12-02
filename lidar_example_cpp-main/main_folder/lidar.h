@@ -20,4 +20,3 @@ using namespace sl;
 ILidarDriver* connectLidar();
 void disconnectLidar(ILidarDriver* lidar);
 void myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, FILE* fp);
-void makeCluster();
