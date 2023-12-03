@@ -34,11 +34,13 @@ void myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, FILE
 
   int rotationCount = 1;
   int i = 0;
-
+  size_t nodeCount = 1000;
+  myData->size = (int) nodeCount;
+  
   sl_result res;
   while(i < rotationCount) {
-    sl_lidar_response_measurement_node_hq_t nodes[1000];
-    size_t nodeCount = sizeof(nodes)/sizeof(sl_lidar_response_measurement_node_hq_t);
+    sl_lidar_response_measurement_node_hq_t nodes[nodeCount];
+    //size_t nodeCount = sizeof(nodes)/sizeof(sl_lidar_response_measurement_node_hq_t);
     res = lidar->grabScanDataHq(nodes, nodeCount);
     i++;
     if (SL_IS_OK(res)) {
@@ -66,12 +68,35 @@ void myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, FILE
         }
       }
     }
+    
+
 
 }
 
+void makeCluster(myGrabData* myData) {
 
-void makeCluster(){
+    float threshold_angle = 0.1;
+    float threshold_distance = 1.0;
+    int ClustNumber = 1;
+
+    for (int i = 2; i < (int) myData->size; i++) {
+        if (myData[i].distance == 0.0) {
+            myData[i].clust = 0;
+        }
+        else if (myData[i].distance != 0.0) {
+            
+            myData[i].clust = ClustNumber;
+            /*
+            if ( (myData[i+1].angle - myData[i].angle) <  threshold_angle && (myData[i+1].distance - myData[i].distance) < threshold_distance ) {
+              myData[i+1].clust = ClustNumber;
+            }
+            */
+
+
+        }
 
 
 
+
+    }
 }

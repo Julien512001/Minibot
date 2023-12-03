@@ -10,7 +10,9 @@
 typedef struct {
     float distance;
     float angle;
-} __attribute__((packed)) myGrabData;
+    int clust;
+    int size;
+} myGrabData;
 
 
 #include <thread>
@@ -20,3 +22,4 @@ using namespace sl;
 ILidarDriver* connectLidar();
 void disconnectLidar(ILidarDriver* lidar);
 void myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, FILE* fp);
+void makeCluster(myGrabData* myData);
