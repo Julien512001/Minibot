@@ -11,7 +11,7 @@
 
 // SPI param
 #define SPI_CHANNEL 1
-#define SPI_SPEED   1000000 // Vitesse de transmission en Hz
+#define SPI_SPEED   500000 // Vitesse de transmission en Hz
 
 // Pin param
 #define PWM_PIN_L 12    //PWM1 -> M1PWM
@@ -23,8 +23,8 @@
 FILE* fp;
 
 // PID param
-#define Kp 3.9124
-#define Ki 2.0467
+#define Kp 0.3912
+#define Ki 10.2336
 #define Kd 0
 
 long prevT = 0;
@@ -132,13 +132,13 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
 
     printf("V_L : %f, V_R : %f\n", V_value_L, V_value_R);
 
-/*
-    if (V_value_L < -12) V_value_L = -12;
-    else if (V_value_L > 12) V_value_L = 12;
 
-    if (V_value_R < -12) V_value_R = -12;
-    else if (V_value_R > 12) V_value_R = 12;
-*/
+    if (V_value_L < -1000) V_value_L = -1000;
+    else if (V_value_L > 1000) V_value_L = 1000;
+
+    if (V_value_R < -1000) V_value_R = -1000;
+    else if (V_value_R > 1000) V_value_R = 1000;
+
     Direction(V_value_L, V_value_R);
 
     printf("V_sat_L : %f, V_sat_R : %f\n", V_value_L, V_value_R);

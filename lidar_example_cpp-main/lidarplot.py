@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 # Définir le nom de fichier
-nom_fichier = 'Data/LidarDataTest.txt'
+nom_fichier = 'Data/LidarDataTable0.txt'
 
 # Définir le motif de délimiteur basé sur l'expression régulière
 #delimiteur_pattern = r'\s*theta: | Dist: | Q: '
