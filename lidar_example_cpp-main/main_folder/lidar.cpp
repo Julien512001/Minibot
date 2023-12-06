@@ -30,12 +30,13 @@ void disconnectLidar(ILidarDriver* lidar){
     delete lidar;
 }
 
-void myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, FILE* fp) {
+int myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, FILE* fp) {
 
   int rotationCount = 1;
   int i = 0;
   size_t nodeCount = 1000;
   myData->size = (int) nodeCount;
+  int filterNumber = 0;
   
   sl_result res;
   while(i < rotationCount) {
@@ -59,44 +60,29 @@ void myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, FILE
                 nodes[pos].dist_mm_q2/1000.f/(1<<2),
                 nodes[pos].quality >> SL_LIDAR_RESP_MEASUREMENT_QUALITY_SHIFT);
           */
+          if (nodes[pos].dist_mm_q2/1000.f/ (1<<2) > maxDistance) filterNumber ++;
           myData[pos].angle =    (nodes[pos].angle_z_q14 * 90.f) / (1<<14);
-          myData[pos].distance = (nodes[pos].dist_mm_q2/1000.f/ (1<<2) < maxDistance) ? nodes[pos].dist_mm_q2/1000.f/ (1<<2) : 0.0;
+          myData[pos].distance = nodes[pos].dist_mm_q2/1000.f/ (1<<2);
 
           //printf("angle : %f, distance : %f\n", data[pos].angle, data[pos].distance);
 
           fprintf(fp, "angle : %f, distance : %f\n", myData[pos].angle, myData[pos].distance);
         }
       }
-    }
-    
-
-
+  }
+  return filterNumber;
 }
 
-void makeCluster(myGrabData* myData) {
 
-    float threshold_angle = 0.1;
-    float threshold_distance = 1.0;
-    int ClustNumber = 1;
-
-    for (int i = 2; i < (int) myData->size; i++) {
-        if (myData[i].distance == 0.0) {
-            myData[i].clust = 0;
-        }
-        else if (myData[i].distance != 0.0) {
-            
-            myData[i].clust = ClustNumber;
-            /*
-            if ( (myData[i+1].angle - myData[i].angle) <  threshold_angle && (myData[i+1].distance - myData[i].distance) < threshold_distance ) {
-              myData[i+1].clust = ClustNumber;
-            }
-            */
-
-
-        }
-
-
-
-
+void filter(myGrabData* myData, myGrabData* filteredData, int filterNumber, float maxDistance) {
+  int count = 0;
+  for (int i = 0; i < filterNumber; i++) {
+    if(myData[i].distance < maxDistance) {
+      filteredData[count].distance = myData[i].distance;
+      count ++;
     }
+    else {
+      continue;
+    }
+  }
 }

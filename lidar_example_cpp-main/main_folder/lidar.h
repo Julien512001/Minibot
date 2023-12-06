@@ -21,5 +21,6 @@ using namespace sl;
 
 ILidarDriver* connectLidar();
 void disconnectLidar(ILidarDriver* lidar);
-void myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, FILE* fp);
+int myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, FILE* fp);
 void makeCluster(myGrabData* myData);
+void filter(myGrabData* myData, myGrabData* filteredData, int filterNumber, float maxDistance);
