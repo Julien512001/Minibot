@@ -12,16 +12,13 @@ using namespace sl;
 int main(int argc, const char * argv[]){
 
   ILidarDriver *lidar;
-  myGrabData myData[1000];
-  float maxDistance = 1.25;
+  size_t nodeCount = 1000;
+  myGrabData myData[nodeCount];
+
+  float maxDistance = 1.2;
   int filterNumber = 0;
-
-
-
-  FILE* fp;
-  FILE* fp1;
-  fp = fopen("Data/LidarDataTable0.txt", "a");
-  fp1 = fopen("Data/LidarDataFiltered0.txt", "a");
+  float angle_th = 1.0;
+  float distance_th = 0.01;
 
 	lidar = connectLidar();
 
@@ -30,26 +27,35 @@ int main(int argc, const char * argv[]){
 
 
   while (i < cycle) {
-    filterNumber = myScanData(lidar, myData, maxDistance, fp);
+    int clustNumber;
+    filterNumber = myScanData(lidar, myData, maxDistance, nodeCount);
     printf("filterNumber : %d\n", filterNumber);
 
-
     myGrabData* filteredData = (myGrabData*) malloc(filterNumber*sizeof(myGrabData));
-    filter(myData, filteredData, filterNumber, maxDistance);
-    //makeCluster(myData);
+    filter(myData, filteredData, filterNumber, maxDistance, nodeCount);
+
+    clustNumber = makeCluster(filteredData, filterNumber, angle_th, distance_th);
+    printf("clustnumber : %d\n", clustNumber);
+
+    
+    clusterMean* myClusterMean = (clusterMean*) malloc(clustNumber*sizeof(clusterMean));
+    meanCluster(filteredData, myClusterMean, filterNumber);
+
+    FILE* fp3;
+    fp3 = fopen("Data/LidarMean0.txt", "w");
+    for (int i = 0; i < clustNumber; i++) {
+      fprintf(fp3,"angle : %f, distance : %f\n", myClusterMean[i].angle, myClusterMean[i].distance);
+    }
+
+
+    fclose(fp3);
+    free(myClusterMean);
+    free(filteredData);
     i++;
   }
-  
-  for (int j = 0; j < (int) myData->size; j++) {
-    fprintf(fp1, "angle : %f, distance : %f\n", myData[j].angle, myData[j].distance);
-  }
-  
 
-  
 	disconnectLidar(lidar);
-
-  fclose(fp);
-  fclose(fp1);
+  
 
   return 0;
 }
