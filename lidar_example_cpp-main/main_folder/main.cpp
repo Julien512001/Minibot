@@ -15,7 +15,7 @@ int main(int argc, const char * argv[]){
   size_t nodeCount = 1000;
   myGrabData myData[nodeCount];
 
-  float maxDistance = 1.2;
+  float maxDistance = 3.8;
   int filterNumber = 0;
   float angle_th = 1.0;
   float distance_th = 0.01;
@@ -42,7 +42,7 @@ int main(int argc, const char * argv[]){
     meanCluster(filteredData, myClusterMean, filterNumber);
 
     FILE* fp3;
-    fp3 = fopen("Data/LidarMean0.txt", "w");
+    fp3 = fopen("Data/LidarMeanTable0.txt", "w");
     for (int i = 0; i < clustNumber; i++) {
       fprintf(fp3,"angle : %f, distance : %f\n", myClusterMean[i].angle, myClusterMean[i].distance);
     }

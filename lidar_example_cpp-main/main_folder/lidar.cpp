@@ -75,7 +75,7 @@ void filter(myGrabData* myData, myGrabData* filteredData, int filterNumber, floa
 int makeCluster(myGrabData* data, int count, float angle_th, float distance_th){
 
   FILE* fp2;
-  fp2 = fopen("Data/LidarClust0.txt", "w");
+  fp2 = fopen("Data/LidarClustTable0.txt", "w");
   int number = 1;
   int clusterCount = 0;
   data[0].clust = number;
