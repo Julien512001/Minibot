@@ -17,8 +17,6 @@ typedef struct {
 typedef struct {
     float angle;
     float distance;
-    int counter;
-    int totalCluster;
 } clusterMean;
 
 
@@ -32,3 +30,5 @@ int myScanData(ILidarDriver* lidar, myGrabData* myData, float maxDistance, size_
 void filter(myGrabData* myData, myGrabData* filteredData, int filterNumber, float maxDistance, size_t nodeCount);
 int makeCluster(myGrabData* data, int count, float angle_th, float distance_th);
 void meanCluster(myGrabData* data, clusterMean* myClusterMean, int filterNumber);
+float distance(clusterMean x1, clusterMean x2);
+void interDistance(clusterMean* myClusterMean, float* distMatrix, int N);

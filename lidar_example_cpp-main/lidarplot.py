@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 
 # Définir le nom de fichier
-MEAN = 'Data/LidarMeanTable0.txt'
-BRUT = 'Data/LidarClustTable0.txt'
+MEAN = 'DataM/LidarMeanM0.txt'
+BRUT = 'DataM/LidarClustM0.txt'
 
 
 # Définir le motif de délimiteur basé sur l'expression régulière

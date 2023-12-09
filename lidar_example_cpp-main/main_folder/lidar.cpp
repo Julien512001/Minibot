@@ -1,6 +1,7 @@
 #include "lidar.h"
 
 
+
 ILidarDriver* connectLidar(){
 
   ILidarDriver* lidar;
@@ -75,7 +76,7 @@ void filter(myGrabData* myData, myGrabData* filteredData, int filterNumber, floa
 int makeCluster(myGrabData* data, int count, float angle_th, float distance_th){
 
   FILE* fp2;
-  fp2 = fopen("Data/LidarClustTable0.txt", "w");
+  fp2 = fopen("DataM/LidarClustM0.txt", "w");
   int number = 1;
   int clusterCount = 0;
   data[0].clust = number;
@@ -83,7 +84,7 @@ int makeCluster(myGrabData* data, int count, float angle_th, float distance_th){
     if (((data[i].angle - data[i-1].angle) < angle_th) & ((data[i].distance - data[i-1].distance) < distance_th)) {
       data[i].clust = number;
       clusterCount ++;
-      printf("angle : %f, dist : %f, clust : %d\n", data[i].angle, data[i].distance, data[i].clust);
+      //printf("angle : %f, dist : %f, clust : %d\n", data[i].angle, data[i].distance, data[i].clust);
       fprintf(fp2, "angle : %f, distance : %f\n", data[i].angle, data[i].distance);
     } else {
       clusterCount = 0;
@@ -126,3 +127,29 @@ void meanCluster(myGrabData* data, clusterMean* myClusterMean, int filterNumber)
     }
   }
 }
+
+float distance(clusterMean x1, clusterMean x2) {
+  float x = (x2.distance*cos(M_PI/180 * x2.angle) - x1.distance*cos(M_PI/180 * x1.angle));
+  float y = (x2.distance*sin(M_PI/180 * x2.angle) - x1.distance*sin(M_PI/180 * x1.angle));
+  return sqrt(pow(x,2) + pow(y,2));
+}
+
+
+void interDistance(clusterMean* myClusterMean, float* distMatrix, int N) {
+
+  int i;
+  int j;
+  int k = 0;
+
+
+  for (i = 0; i < N; i++) {
+    for (j = i+1; j < N; j++) {
+      distMatrix[k] = distance(myClusterMean[i], myClusterMean[j]);
+      printf("i+j-1 : %d\n", k);
+      printf("dist : %f\n", distMatrix[k]);
+      k++;
+    }
+  }
+}
+
+

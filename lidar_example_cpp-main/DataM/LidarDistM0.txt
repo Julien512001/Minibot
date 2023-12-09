@@ -1,0 +1,10 @@
+distance : 1.848782
+distance : 1.156253
+distance : 1.699672
+distance : 0.706554
+distance : 1.291724
+distance : 1.999542
+distance : 1.900910
+distance : 0.808541
+distance : 0.758952
+distance : 1.032852
