@@ -1,5 +1,12 @@
-angle : 18.391113, distance : 0.966222
-angle : 147.793579, distance : 1.078000
-angle : 265.984222, distance : 0.365850
-angle : 273.359100, distance : 1.170000
-angle : 332.763062, distance : 0.824667
+angle : 4.077220, distance : 1.725647
+angle : 11.613922, distance : 1.830000
+angle : 17.341919, distance : 1.974000
+angle : 26.112671, distance : 1.000667
+angle : 40.601807, distance : 0.640333
+angle : 112.601837, distance : 1.560000
+angle : 134.874557, distance : 1.678250
+angle : 157.094879, distance : 0.998000
+angle : 187.886520, distance : 1.931826
+angle : 262.457642, distance : 1.135023
+angle : 331.544220, distance : 1.926060
+angle : 354.064087, distance : 1.651200

@@ -15,7 +15,7 @@ int main(int argc, const char * argv[]){
   size_t nodeCount = 1000;
   myGrabData myData[nodeCount];
 
-  float maxDistance = 1.25;
+  float maxDistance = 2.0;
   int filterNumber = 0;
   float angle_th = 5.0;
   float distance_th = 0.1;
@@ -53,7 +53,7 @@ int main(int argc, const char * argv[]){
     printf("hello0\n");
 
 
-    float* distMatrix = (float*) malloc(matrixSize*sizeof(float));
+    myDistance* distMatrix = (myDistance*) malloc(matrixSize*sizeof(myDistance));
     printf("hello1\n");
     interDistance(myClusterMean, distMatrix, clustNumber);
 
@@ -61,15 +61,29 @@ int main(int argc, const char * argv[]){
     FILE* fp4;
     fp4 = fopen("DataM/LidarDistM0.txt", "w");
     for (int i = 0; i < matrixSize; i++) {
-      fprintf(fp4,"distance : %f\n", distMatrix[i]);
+      fprintf(fp4,"dist : %f, i : %d, j : %d\n", distMatrix[i].euclidian, distMatrix[i].i, distMatrix[i].j);
     }
-
-
     fclose(fp4);
+
+
+    float triangle[] = {1.820820, 1.241578, 1.221634};
+    clusterMean* newCluster = (clusterMean*) malloc(3*sizeof(clusterMean));
+
+    findTriangle(triangle, distMatrix, newCluster, myClusterMean, matrixSize);
+
+    FILE* fp5;
+    fp5 = fopen("DataM/LidarBalise0.txt", "w");
+    for (int i = 0; i < 3; i++) {
+      fprintf(fp5,"angle : %f, distance : %f\n", newCluster[i].angle, newCluster[i].distance);
+    }
+    fclose(fp5);
+    
+    
     fclose(fp3);
     free(myClusterMean);
     free(filteredData);
     free(distMatrix);
+    free(newCluster);
     i++;
   }
 

@@ -135,21 +135,111 @@ float distance(clusterMean x1, clusterMean x2) {
 }
 
 
-void interDistance(clusterMean* myClusterMean, float* distMatrix, int N) {
+void interDistance(clusterMean* myClusterMean, myDistance* distMatrix, int N) {
 
   int i;
   int j;
   int k = 0;
 
-
   for (i = 0; i < N; i++) {
     for (j = i+1; j < N; j++) {
-      distMatrix[k] = distance(myClusterMean[i], myClusterMean[j]);
-      printf("i+j-1 : %d\n", k);
-      printf("dist : %f\n", distMatrix[k]);
+      distMatrix[k].euclidian = distance(myClusterMean[i], myClusterMean[j]);
+      distMatrix[k].i = i;
+      distMatrix[k].j = j;
+      //printf("i+j-1 : %d\n", k);
+      printf("dist : %f, i : %d, j : %d\n", distMatrix[k].euclidian, i, j);
       k++;
     }
   }
 }
 
 
+void findTriangle(float* triangle, myDistance* dist, clusterMean* newCluster, clusterMean* oldCluster, int N) {
+  int index[2];
+
+
+  for (int i = 0; i < 2; i++) {
+    myDistance minimumDistance;
+    minimumDistance = dist[0];
+
+    for (int j = 1; j < N; j++) {
+      if (abs(dist[j].euclidian-triangle[i]) < abs(minimumDistance.euclidian-triangle[i])) {
+        minimumDistance = dist[j];
+      }
+    }
+
+    if (i == 0) {
+    newCluster[0].distance = oldCluster[minimumDistance.i].distance;
+    newCluster[0].angle = oldCluster[minimumDistance.i].angle;
+
+    newCluster[1].distance = oldCluster[minimumDistance.j].distance;
+    newCluster[1].angle = oldCluster[minimumDistance.j].angle;
+    
+    index[0] = minimumDistance.i;
+    index[1] = minimumDistance.j;
+    }
+    else if (i == 1) {
+      if ((minimumDistance.i == index[0]) || (minimumDistance.i == index[1])) {
+        newCluster[2].distance = oldCluster[minimumDistance.j].distance;
+        newCluster[2].angle = oldCluster[minimumDistance.j].angle;
+
+      }
+      else if ((minimumDistance.j == index[0]) || (minimumDistance.j == index[1])) {
+        newCluster[2].distance = oldCluster[minimumDistance.i].distance;
+        newCluster[2].angle = oldCluster[minimumDistance.i].angle;
+
+      }
+    }
+  }
+
+/*
+    if (i == 0) {
+      newCluster[0].distance = oldCluster[minimumDistance.i].distance;
+      newCluster[0].angle = oldCluster[minimumDistance.i].angle;
+
+      oldCluster[minimumDistance.i].distance = 0.0;
+      oldCluster[minimumDistance.i].angle = 0.0;
+
+      newCluster[1].distance = oldCluster[minimumDistance.j].distance;
+      newCluster[1].angle = oldCluster[minimumDistance.j].angle;
+
+      oldCluster[minimumDistance.j].distance = 0.0;
+      oldCluster[minimumDistance.j].angle = 0.0;
+    }
+    else if (i == 1) {
+      newCluster[3].distance = oldCluster[minimumDistance.j].distance;
+      newCluster[3].angle = oldCluster[minimumDistance.j].angle;
+    }
+*/
+
+  }
+
+
+
+/*
+    if (i == 0) {
+      newCluster[0].distance = oldCluster[minimumDistance.i].distance;
+      newCluster[0].angle = oldCluster[minimumDistance.i].angle;
+
+      newCluster[1].distance = oldCluster[minimumDistance.j].distance;
+      newCluster[1].angle = oldCluster[minimumDistance.j].angle;
+
+      index[0] = minimumDistance.i;
+      index[1] = minimumDistance.j;
+    }
+    else if (i == 1) {
+      if ( !(minimumDistance.i == index[0]) || !(minimumDistance.i == index[1])) {
+        newCluster[2].distance = oldCluster[minimumDistance.i].distance;
+        newCluster[2].angle = oldCluster[minimumDistance.i].angle;
+      }
+      else if (!(minimumDistance.j == index[0]) || !(minimumDistance.j == index[1])) {
+        newCluster[2].distance = oldCluster[minimumDistance.j].distance;
+        newCluster[2].angle = oldCluster[minimumDistance.j].angle;
+      }
+      else {
+        newCluster[2].distance = 10.0;
+        newCluster[2].angle = 10.0;
+      }
+    }
+  }
+  */

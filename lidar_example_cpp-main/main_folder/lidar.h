@@ -19,6 +19,13 @@ typedef struct {
     float distance;
 } clusterMean;
 
+typedef struct {
+    float euclidian;
+    int i;
+    int j;
+} myDistance;
+
+
 
 #include <thread>
 
@@ -31,4 +38,5 @@ void filter(myGrabData* myData, myGrabData* filteredData, int filterNumber, floa
 int makeCluster(myGrabData* data, int count, float angle_th, float distance_th);
 void meanCluster(myGrabData* data, clusterMean* myClusterMean, int filterNumber);
 float distance(clusterMean x1, clusterMean x2);
-void interDistance(clusterMean* myClusterMean, float* distMatrix, int N);
+void interDistance(clusterMean* myClusterMean, myDistance* distMatrix, int N);
+void findTriangle(float* triangle, myDistance* dist, clusterMean* newCluster, clusterMean* oldCluster, int N);
