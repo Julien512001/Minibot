@@ -102,8 +102,8 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
     float V_value_L;
     float V_value_R;
 
-    int previous_PWM_L;
-    int previous_PWM_R;
+    int previous_PWM_L = 0;
+    int previous_PWM_R = 0;
 
     float current_speed_L = 0.0;
     float current_speed_R = 0.0;
@@ -151,8 +151,8 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
 
     //PWM_value_L = (int) abs(V_value_L)/12 * 1000;
     //PWM_value_R = (int) abs(V_value_R)/12 * 1000;
-    PWM_value_L = (int) (abs(V_value_L) + abs(previous_PWM_L));
-    PWM_value_R = (int) (abs(V_value_R) + abs(previous_PWM_R));
+    PWM_value_L = (int) (abs(V_value_L) + abs(previous_PWM_L))/2;
+    PWM_value_R = (int) (abs(V_value_R) + abs(previous_PWM_R))/2;
 
     gpioPWM(PWM_PIN_L, PWM_value_L);
     gpioPWM(PWM_PIN_R, PWM_value_R);
