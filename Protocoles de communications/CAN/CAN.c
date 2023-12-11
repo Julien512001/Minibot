@@ -1,5 +1,5 @@
 /*test SPI*/
-/* Pour exécuter : gcc -o main LEDCAN_EZ.c -lpigpio -lrt -lpthread -lm */
+/* Pour exécuter : gcc -o main CAN.c -lpigpio -lrt -lpthread -lm */
 #include <stdio.h>
 #include <stdlib.h>
 //#include "pigpio.h"
@@ -18,6 +18,8 @@ void ledcan_off(){
     sleep(1);
     return;
 }
+
+/*
 void ledcan_read(){  
     //system("candump can0");
     //sleep(1);
@@ -35,12 +37,12 @@ void ledcan_read(){
 
     return;
 }
-
+*/
 
 int main(void){
     ledcan_on();
     sleep(5);
     ledcan_off();
-    ledcan_read();
+    //ledcan_read();
     return 0;
 }

@@ -27,7 +27,7 @@ FILE* fp;
 // PID param
 #define Kp 0.0049
 #define Ki 11.8223
-#define Kd 0.0
+#define Kd 0.0001
 
 long prevT = 0;
 float previous_error_L = 0;
@@ -139,11 +139,21 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
     printf("V_L : %f, V_R : %f\n", V_value_L, V_value_R);
 
 
-    if (V_value_L < -1000) V_value_L = -1000;
-    else if (V_value_L > 1000) V_value_L = 1000;
+    if (V_value_L < -1000) {
+        V_value_L = -1000;
+    }
+    else if (V_value_L > 1000) {
+        V_value_L = 1000;
+    }
 
-    if (V_value_R < -1000) V_value_R = -1000;
-    else if (V_value_R > 1000) V_value_R = 1000;
+    if (V_value_R < -1000) {
+        V_value_R = -1000;
+    }
+    else if (V_value_R > 1000) {
+        V_value_R = 1000;
+    }
+
+    //if (V_value_L > abs(1000)) 
 
     Direction(V_value_L, V_value_R);
 
