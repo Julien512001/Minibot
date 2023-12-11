@@ -25,9 +25,9 @@
 FILE* fp;
 
 // PID param
-#define Kp 1.7843
-#define Ki 5.9112
-#define Kd 0.01
+#define Kp 0.0049
+#define Ki 11.8223
+#define Kd 0.0
 
 long prevT = 0;
 float previous_error_L = 0;
@@ -238,7 +238,7 @@ int main() {
 
     target_speed_L = malloc(time*sizeof(float));
     target_speed_R = malloc(time*sizeof(float));
-
+/*
     for (int i = 0; i < time; i++) {
         if (i <= time/4) {
             target_speed_L[i] = 10.0;
@@ -253,6 +253,19 @@ int main() {
             target_speed_L[i] = -10.0;
             target_speed_R[i] = -10.0;  
         }
+    }
+*/
+    for (int i = 0; i < time; i++) {
+        if (i <= time/2) {
+            target_speed_L[i] = 10.0;
+            target_speed_R[i] = 10.0;
+        } else if (i <= time/2+2840 & i > time/2) {
+            target_speed_L[i] = -10.0;
+            target_speed_R[i] = 10.0;
+        } else if (i > time/2+284) {
+            target_speed_L[i] = 10.0;
+            target_speed_R[i] = 10.0;         
+    }
     }
 
 
