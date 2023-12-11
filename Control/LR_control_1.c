@@ -20,11 +20,13 @@
 #define dR_PIN 6
 #define ENCODER_PIN 17  // Remplacez ceci par le bon numéro de GPIO pour votre encodeur
 
+#define T           1/50e6
+
 FILE* fp;
 
 // PID param
-#define Kp 0.3912
-#define Ki 10.2336
+#define Kp 1.7843
+#define Ki 5.9112
 #define Kd 0
 
 long prevT = 0;
@@ -168,15 +170,32 @@ void initPWM() {
 }
 
 
+float ReadSonar(){
+    char txDataS[] = {0x00,0x00, 0x00, 0x00, 0x00};
+    char rxDataS[5];
+    int convert;
+
+    spiXfer(spiHandle, txDataS, rxDataS, sizeof(txDataS));
+    
+    convert = convertToDecimal(rxDataS, 5);
+
+    return convert;
+}
+
 
 void runMotors(int cycle, float step, float *target_speed_L, float *target_speed_R) {
     unsigned int start_time = gpioTick();
     unsigned int elapsed_time = 0;
     int i = 0;
+float distance;
     while (i < cycle) {
 
         controlSpeed(target_speed_L[i], target_speed_R[i], step);
-
+        printf("target_L : %f, target_R : %f\n", target_speed_L[i], target_speed_R[i]);
+        distance = ReadSonar();
+        distance = distance*T/(340*2)*1e7;
+        printf("distance : %f\n", distance);
+        if (distance < 10.0) break;
         elapsed_time = (gpioTick() - start_time) / 1000;
         sleep(step);
         i++;
@@ -214,13 +233,13 @@ int main() {
     target_speed_R = malloc(time*sizeof(float));
 
     for (int i = 0; i < time; i++) {
-        if (i < time/4) {
+        if (i <= time/4) {
             target_speed_L[i] = 10.0;
             target_speed_R[i] = 10.0;
-        } else if (i < time/2 & i > time/4) {
+        } else if (i <= time/2 & i > time/4) {
             target_speed_L[i] = 10.0;
             target_speed_R[i] = 10.0;
-        } else if (i < 3*time/4 & i > time/2) {
+        } else if (i <= 3*time/4 & i > time/2) {
             target_speed_L[i] = -10.0;
             target_speed_R[i] = -10.0;         
         } else {
@@ -238,10 +257,10 @@ int main() {
     gpioTerminate();
     fclose(fp);
 
-    /*
+    
     free(target_speed_L);
     free(target_speed_R);
-    */
+    
 
     return 0;
 }
