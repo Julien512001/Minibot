@@ -38,5 +38,6 @@ void filter(myGrabData* myData, myGrabData* filteredData, int filterNumber, floa
 int makeCluster(myGrabData* data, int count, float angle_th, float distance_th);
 void meanCluster(myGrabData* data, clusterMean* myClusterMean, int filterNumber);
 float distance(clusterMean x1, clusterMean x2);
-void interDistance(clusterMean* myClusterMean, myDistance* distMatrix, int N);
+int interDistance(clusterMean* myClusterMean, myDistance* distMatrix, int N, float Lsize, float Ssize, float dist_th);
+void distanceFilter(myDistance* new_dist, myDistance* old_dist, int size, float Lsize, float Ssize, float dist_th);
 void findTriangle(float* triangle, myDistance* dist, clusterMean* newCluster, clusterMean* oldCluster, int N);

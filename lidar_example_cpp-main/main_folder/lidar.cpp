@@ -135,11 +135,12 @@ float distance(clusterMean x1, clusterMean x2) {
 }
 
 
-void interDistance(clusterMean* myClusterMean, myDistance* distMatrix, int N) {
+int interDistance(clusterMean* myClusterMean, myDistance* distMatrix, int N, float Lsize, float Ssize, float dist_th) {
 
   int i;
   int j;
   int k = 0;
+  int distCount = 0;
 
   for (i = 0; i < N; i++) {
     for (j = i+1; j < N; j++) {
@@ -148,11 +149,38 @@ void interDistance(clusterMean* myClusterMean, myDistance* distMatrix, int N) {
       distMatrix[k].j = j;
       //printf("i+j-1 : %d\n", k);
       printf("dist : %f, i : %d, j : %d\n", distMatrix[k].euclidian, i, j);
+      if (((distMatrix[k].euclidian < Lsize + dist_th) & (distMatrix[k].euclidian > Lsize - dist_th)) || ((distMatrix[k].euclidian < Ssize + dist_th) & (distMatrix[k].euclidian > Ssize - dist_th))) {
+        distCount++;
+      }
       k++;
+
     }
   }
+  return distCount;
 }
 
+
+void distanceFilter(myDistance* new_dist, myDistance* old_dist, int size, float Lsize, float Ssize, float dist_th) {
+  int count = 0;
+  for (int i = 0; i < size; i++) {
+    if (((old_dist[i].euclidian < Lsize + dist_th) & (old_dist[i].euclidian > Lsize - dist_th)) || ((old_dist[i].euclidian < Ssize + dist_th) & (old_dist[i].euclidian > Ssize - dist_th))) {
+      new_dist[count] = old_dist[i];
+      count ++;
+    }
+    else {
+      count = count;
+    }
+  } 
+  
+}
+
+/*
+void makeTriangle(myDistance* distFilt, clusterMean* filteredData, int size) {
+
+}
+*/
+
+/*
 
 void findTriangle(float* triangle, myDistance* dist, clusterMean* newCluster, clusterMean* oldCluster, int N) {
   int index[2];
@@ -191,6 +219,9 @@ void findTriangle(float* triangle, myDistance* dist, clusterMean* newCluster, cl
       }
     }
   }
+  */
+
+
 
 /*
     if (i == 0) {
@@ -210,9 +241,10 @@ void findTriangle(float* triangle, myDistance* dist, clusterMean* newCluster, cl
       newCluster[3].distance = oldCluster[minimumDistance.j].distance;
       newCluster[3].angle = oldCluster[minimumDistance.j].angle;
     }
+    
 */
 
-  }
+  
 
 
 
