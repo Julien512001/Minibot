@@ -175,8 +175,11 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
 
     //PWM_value_L = (int) abs(V_value_L)/12 * 1000;
     //PWM_value_R = (int) abs(V_value_R)/12 * 1000;
-    PWM_value_L = (int) (abs(V_value_L) + abs(previous_PWM_L))/2;
-    PWM_value_R = (int) (abs(V_value_R) + abs(previous_PWM_R))/2;
+    //PWM_value_L = (int) (abs(V_value_L) + abs(previous_PWM_L))/2;
+    //PWM_value_R = (int) (abs(V_value_R) + abs(previous_PWM_R))/2;
+
+    PWM_value_L = (int) abs(V_value_L);
+    PWM_value_R = (int) abs(V_value_R);
 
     gpioPWM(PWM_PIN_L, PWM_value_L);
     gpioPWM(PWM_PIN_R, PWM_value_R);
@@ -218,19 +221,17 @@ float ReadSonar(){
 
 
 void runMotors(int cycle, float step, float *target_speed_L, float *target_speed_R) {
-    unsigned int start_time = gpioTick();
-    unsigned int elapsed_time = 0;
+
     int i = 0;
-float distance;
+    float distance;
     while (i < cycle) {
 
         controlSpeed(target_speed_L[i], target_speed_R[i], step);
-        printf("target_L : %f, target_R : %f\n", target_speed_L[i], target_speed_R[i]);
+        //printf("target_L : %f, target_R : %f\n", target_speed_L[i], target_speed_R[i]);
         distance = ReadSonar();
         distance = distance*T/(340*2)*1e7;
-        printf("distance : %f\n", distance);
+        //printf("distance : %f\n", distance);
         if (distance < 10.0) break;
-        elapsed_time = (gpioTick() - start_time) / 1000;
         sleep(step);
         i++;
     }
