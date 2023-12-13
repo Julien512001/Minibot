@@ -22,12 +22,12 @@
 
 #define T           1/50e6
 
-FILE* fp;
+
 
 // PID param
 #define Kp 0.0049
 #define Ki 11.8223
-#define Kd 0.0001
+#define Kd 0.0000
 
 long prevT = 0;
 float previous_error_L = 0;
@@ -79,8 +79,13 @@ void readEncoder(float *current_speed_L, float *current_speed_R) {
     float speed_R = tick_R/64.0 * 2.0*M_PI / TS * 1/30.0;
     *current_speed_L = speed_L;
     *current_speed_R = speed_R;
-    //fprintf(fp,"%f, %f\n", speed_L, speed_R);
-    printf("speed_L : %f, %d, speed_R : %f, %d\n ", speed_L, tick_L, speed_R, tick_R);
+
+
+    FILE* fp;
+    fp = fopen("Data/Speed0.txt", "a");
+    fprintf(fp,"%f, %f\n", speed_L, speed_R);
+    fclose(fp);
+    //printf("speed_L : %f, %d, speed_R : %f, %d\n ", speed_L, tick_L, speed_R, tick_R);
 }
 
 void Direction(float current_speed_L, float current_speed_R) {
@@ -107,6 +112,9 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
 
     float current_speed_L = 0.0;
     float current_speed_R = 0.0;
+
+    float I_L_previous = 0.0;
+    float I_R_previous = 0.0;
 
 
     float error_L, error_R, integral_L, integral_R, derivative_L, derivative_R;
@@ -153,7 +161,13 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
         V_value_R = 1000;
     }
 
-    //if (V_value_L > abs(1000)) 
+    if (V_value_L > abs(1000)) {
+        I_L = I_L_previous;
+    }
+
+    if (V_value_R > abs(1000)) {
+        I_R = I_R_previous;
+    }
 
     Direction(V_value_L, V_value_R);
 
@@ -172,6 +186,9 @@ void controlSpeed(float target_speed_L, float target_speed_R, float step) {
 
     previous_PWM_L = PWM_value_L;
     previous_PWM_R = PWM_value_R;
+
+    I_L_previous = I_L;
+    I_R_previous = I_R;
 }
 
 void initPWM() {
@@ -241,14 +258,14 @@ int main() {
 
     initPWM();
 
-    fp = fopen("Speed.txt", "a");
+
     float *target_speed_L;
     float *target_speed_R;
 
 
     target_speed_L = malloc(time*sizeof(float));
     target_speed_R = malloc(time*sizeof(float));
-/*
+
     for (int i = 0; i < time; i++) {
         if (i <= time/4) {
             target_speed_L[i] = 10.0;
@@ -264,20 +281,20 @@ int main() {
             target_speed_R[i] = -10.0;  
         }
     }
-*/
+/*
     for (int i = 0; i < time; i++) {
         if (i <= time/2) {
             target_speed_L[i] = 10.0;
             target_speed_R[i] = 10.0;
         } else if (i <= time/2+2840 & i > time/2) {
             target_speed_L[i] = -10.0;
-            target_speed_R[i] = 10.0;
+            target_speed_R[i] = -10.0;
         } else if (i > time/2+284) {
             target_speed_L[i] = 10.0;
             target_speed_R[i] = 10.0;         
     }
     }
-
+*/
 
     float step = 0.01;
 
@@ -285,7 +302,6 @@ int main() {
 
     spiClose(spiHandle);
     gpioTerminate();
-    fclose(fp);
 
     
     free(target_speed_L);
