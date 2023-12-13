@@ -82,7 +82,7 @@ void readEncoder(float *current_speed_L, float *current_speed_R) {
 
 
     FILE* fp;
-    fp = fopen("Data/Speed0.txt", "a");
+    fp = fopen("Data/Speed3.txt", "a");
     fprintf(fp,"%f, %f\n", speed_L, speed_R);
     fclose(fp);
     //printf("speed_L : %f, %d, speed_R : %f, %d\n ", speed_L, tick_L, speed_R, tick_R);
@@ -225,6 +225,7 @@ void runMotors(int cycle, float step, float *target_speed_L, float *target_speed
     int i = 0;
     float distance;
     while (i < cycle) {
+        
 
         controlSpeed(target_speed_L[i], target_speed_R[i], step);
         //printf("target_L : %f, target_R : %f\n", target_speed_L[i], target_speed_R[i]);
@@ -247,7 +248,7 @@ int main() {
         fprintf(stderr, "Échec de l'initialisation de pigpio.\n");
         exit(1);
     }
-    int time = 20000;
+    int time = 40000;
 
     spiHandle = spiOpen(SPI_CHANNEL, SPI_SPEED, 0);
     if (spiHandle < 0)
@@ -266,7 +267,7 @@ int main() {
 
     target_speed_L = malloc(time*sizeof(float));
     target_speed_R = malloc(time*sizeof(float));
-
+/*
     for (int i = 0; i < time; i++) {
         if (i <= time/4) {
             target_speed_L[i] = 10.0;
@@ -282,20 +283,20 @@ int main() {
             target_speed_R[i] = -10.0;  
         }
     }
-/*
+*/
     for (int i = 0; i < time; i++) {
         if (i <= time/2) {
             target_speed_L[i] = 10.0;
             target_speed_R[i] = 10.0;
-        } else if (i <= time/2+2840 & i > time/2) {
-            target_speed_L[i] = -10.0;
+        } else if (i <= time/2+1000 & i > time/2) {
+            target_speed_L[i] = 10.0;
             target_speed_R[i] = -10.0;
-        } else if (i > time/2+284) {
+        } else if (i >= time/2+1000) {
             target_speed_L[i] = 10.0;
             target_speed_R[i] = 10.0;         
     }
     }
-*/
+
 
     float step = 0.01;
 
