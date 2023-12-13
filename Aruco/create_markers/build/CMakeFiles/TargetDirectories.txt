@@ -1,0 +1,4 @@
+/home/julien/Documents/LELME2002/aruco-markers/create_markers/build/CMakeFiles/generate_marker.dir
+/home/julien/Documents/LELME2002/aruco-markers/create_markers/build/CMakeFiles/generate_board.dir
+/home/julien/Documents/LELME2002/aruco-markers/create_markers/build/CMakeFiles/edit_cache.dir
+/home/julien/Documents/LELME2002/aruco-markers/create_markers/build/CMakeFiles/rebuild_cache.dir
