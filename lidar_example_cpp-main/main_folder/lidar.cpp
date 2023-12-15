@@ -174,11 +174,42 @@ void distanceFilter(myDistance* new_dist, myDistance* old_dist, int size, float 
   
 }
 
-/*
-void makeTriangle(myDistance* distFilt, clusterMean* filteredData, int size) {
-
+void ArrayToMatrix(myDistance* array, float** matrix, int N) {
+  for (int index = 0; index < N-1; index++) {
+    matrix[array[index].i][array[index].j] = array[index].euclidian;
+  }
 }
-*/
+
+int compare(float* a, float* b, float dist_th) {
+  for (int i = 0; i < 3; i++) {
+    if ((a[i] < b[i] - dist_th) || (a[i] > b[i] + dist_th)) {
+      return 0;
+    }
+  }
+  return 1;
+}
+
+
+void makeTriangle(float** matrix, float* triangle_ref, int* myTriangle, float dist_th, int size) {
+  float buffer[3] = {0.0};
+  for (int i = 0; i < size; i++) {
+    for (int j = i+1; j < size; j++) {
+      buffer[0] = matrix[i][j];
+      for (int k = j+1; k < size; k++) {
+        buffer[1] = matrix[i][k];
+        buffer[2] = matrix[j][k];
+        if (compare(buffer, triangle_ref, dist_th)) {
+          myTriangle[0] = i;
+          myTriangle[1] = j;
+          myTriangle[2] = k;
+          break;
+        }
+      }
+    }
+  }
+}
+
+
 
 /*
 

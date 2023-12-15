@@ -1,0 +1,3 @@
+myTriangle : 5
+myTriangle : 17
+myTriangle : 23
