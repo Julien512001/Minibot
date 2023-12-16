@@ -15,9 +15,9 @@ int main(int argc, const char * argv[]){
   size_t nodeCount = 1000;
   myGrabData myData[nodeCount];
 
-  float maxDistance = 3.0;
+  float maxDistance = 2.5;
   int filterNumber = 0;
-  float angle_th = 1.0;
+  float angle_th = 2.0;
   float distance_th = 0.1;
 
   float Lsize = 1.85;

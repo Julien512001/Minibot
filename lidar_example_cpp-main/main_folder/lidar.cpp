@@ -131,7 +131,7 @@ void meanCluster(myGrabData* data, clusterMean* myClusterMean, int filterNumber)
 float distance(clusterMean x1, clusterMean x2) {
   float x = (x2.distance*cos(M_PI/180 * x2.angle) - x1.distance*cos(M_PI/180 * x1.angle));
   float y = (x2.distance*sin(M_PI/180 * x2.angle) - x1.distance*sin(M_PI/180 * x1.angle));
-  return sqrt(pow(x,2) + pow(y,2));
+  return isnan(sqrt(pow(x,2) + pow(y,2))) ? 0.0:sqrt(pow(x,2) + pow(y,2));
 }
 
 
@@ -192,6 +192,7 @@ int compare(float* a, float* b, float dist_th) {
 
 void makeTriangle(float** matrix, float* triangle_ref, int* myTriangle, float dist_th, int size) {
   float buffer[3] = {0.0};
+  float cons[3] = {0.0};
   for (int i = 0; i < size; i++) {
     for (int j = i+1; j < size; j++) {
       buffer[0] = matrix[i][j];
@@ -199,6 +200,24 @@ void makeTriangle(float** matrix, float* triangle_ref, int* myTriangle, float di
         buffer[1] = matrix[i][k];
         buffer[2] = matrix[j][k];
         if (compare(buffer, triangle_ref, dist_th)) {
+          myTriangle[0] = i;
+          myTriangle[1] = j;
+          myTriangle[2] = k;
+          break;
+        }
+        cons[0] = triangle_ref[2];
+        cons[1] = triangle_ref[0];
+        cons[2] = triangle_ref[1];
+        if (compare(buffer, cons, dist_th)) {
+          myTriangle[0] = i;
+          myTriangle[1] = j;
+          myTriangle[2] = k;
+          break;
+        }
+        cons[0] = triangle_ref[1];
+        cons[1] = triangle_ref[2];
+        cons[2] = triangle_ref[0];
+        if (compare(buffer, cons, dist_th)) {
           myTriangle[0] = i;
           myTriangle[1] = j;
           myTriangle[2] = k;
