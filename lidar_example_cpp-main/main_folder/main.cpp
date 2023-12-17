@@ -101,33 +101,43 @@ int main(int argc, const char * argv[]){
     }
     fclose(fp8);
 
-    float distFilt_th = 0.1;
-    float triangle_ref[] = {1.85,1.22,1.29};
-    int myTriangle[3];
+    float distFilt_th = 0.05;
+    float triangle_ref[] = {1.83,1.25,1.25};
+    myTriangle* triangle = (myTriangle*) malloc(matrixCount*sizeof(myTriangle));
 
-    makeTriangle(matrix, triangle_ref, myTriangle, distFilt_th, matrixCount);
+    int triangleNumber;
 
+    triangleNumber = makeTriangle(matrix, triangle_ref, triangle, distFilt_th, matrixCount);
+
+    triangle = (myTriangle*) realloc(triangle, triangleNumber*sizeof(myTriangle));
 
     FILE* fp7;
     fp7 = fopen("DataM/LidarIndex0.txt", "w");
-    for (int i = 0; i < 3; i ++) {
-      fprintf(fp7, "myTriangle : %d\n", myTriangle[i]);
+    for (int i = 0; i < triangleNumber; i ++) {
+      fprintf(fp7, "%d, %d, %d\n", triangle[i].i, triangle[i].j, triangle[i].k);
     }
     fclose(fp7);
+    printf("triangleNumber : %d\n", triangleNumber);
 
 
 
-
-    
     FILE* fp6;
     fp6 = fopen("DataM/LidarBalise0.txt", "w");
     
-    for (int i = 0; i < 3; i++) {
-      fprintf(fp6, "angle : %f, distance : %f\n", myClusterMean[myTriangle[i]].angle, myClusterMean[myTriangle[i]].distance);
-    }
 
+    fprintf(fp6, "angle : %f, distance : %f\n", myClusterMean[triangle[0].i].angle, myClusterMean[triangle[0].i].distance);
+    fprintf(fp6, "angle : %f, distance : %f\n", myClusterMean[triangle[0].j].angle, myClusterMean[triangle[0].j].distance);
+    fprintf(fp6, "angle : %f, distance : %f\n", myClusterMean[triangle[0].k].angle, myClusterMean[triangle[0].k].distance);
     fclose(fp6);
 
+    FILE* fp9;
+    fp9 = fopen("DataM/LidarBalise1.txt", "w");
+    
+
+    fprintf(fp9, "angle : %f, distance : %f\n", myClusterMean[triangle[1].i].angle, myClusterMean[triangle[1].i].distance);
+    fprintf(fp9, "angle : %f, distance : %f\n", myClusterMean[triangle[1].j].angle, myClusterMean[triangle[1].j].distance);
+    fprintf(fp9, "angle : %f, distance : %f\n", myClusterMean[triangle[1].k].angle, myClusterMean[triangle[1].k].distance);
+    fclose(fp9);
 
 
 
@@ -146,7 +156,7 @@ int main(int argc, const char * argv[]){
 /*
     findTriangle(triangle, distMatrix, newCluster, myClusterMean, matrixSize);
 
-    FILE* fp6;
+    FILE* fp6;myTriangle
     fp6 = fopen("DataM/LidarBalise0.txt", "w");
     for (int i = 0; i < 3; i++) {
       fprintf(fp6,"angle : %f, distance : %f\n", newCluster[i].angle, newCluster[i].distance);
@@ -159,6 +169,7 @@ int main(int argc, const char * argv[]){
     free(filteredData);
     free(distMatrix);
     free(distFilter);
+    free(triangle);
 
     for (int i = 0; i < matrixCount; i++) {
         free(matrix[i]);

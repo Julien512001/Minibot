@@ -1,3 +1,1 @@
-myTriangle : 5
-myTriangle : 9
-myTriangle : 18
+3, 18, 32

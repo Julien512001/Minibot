@@ -81,7 +81,7 @@ int makeCluster(myGrabData* data, int count, float angle_th, float distance_th){
   int clusterCount = 0;
   data[0].clust = number;
   for (int i = 1; i < count; i++) {
-    if (((data[i].angle - data[i-1].angle) < angle_th) & ((data[i].distance - data[i-1].distance) < distance_th)) {
+    if (((data[i].angle - data[i-1].angle) < angle_th/2.0) & ((data[i].distance - data[i-1].distance) < distance_th/2.0)) {
       data[i].clust = number;
       clusterCount ++;
       //printf("angle : %f, dist : %f, clust : %d\n", data[i].angle, data[i].distance, data[i].clust);
@@ -190,9 +190,10 @@ int compare(float* a, float* b, float dist_th) {
 }
 
 
-void makeTriangle(float** matrix, float* triangle_ref, int* myTriangle, float dist_th, int size) {
+int makeTriangle(float** matrix, float* triangle_ref, myTriangle* triangle, float dist_th, int size) {
   float buffer[3] = {0.0};
   float cons[3] = {0.0};
+  int count = 0;
   for (int i = 0; i < size; i++) {
     for (int j = i+1; j < size; j++) {
       buffer[0] = matrix[i][j];
@@ -200,128 +201,31 @@ void makeTriangle(float** matrix, float* triangle_ref, int* myTriangle, float di
         buffer[1] = matrix[i][k];
         buffer[2] = matrix[j][k];
         if (compare(buffer, triangle_ref, dist_th)) {
-          myTriangle[0] = i;
-          myTriangle[1] = j;
-          myTriangle[2] = k;
-          break;
+          triangle[count].i = i;
+          triangle[count].j = j;
+          triangle[count].k = k;
+          count++;
         }
         cons[0] = triangle_ref[2];
         cons[1] = triangle_ref[0];
         cons[2] = triangle_ref[1];
         if (compare(buffer, cons, dist_th)) {
-          myTriangle[0] = i;
-          myTriangle[1] = j;
-          myTriangle[2] = k;
-          break;
+          triangle[count].i = i;
+          triangle[count].j = j;
+          triangle[count].k = k;
+          count++;
         }
         cons[0] = triangle_ref[1];
         cons[1] = triangle_ref[2];
         cons[2] = triangle_ref[0];
         if (compare(buffer, cons, dist_th)) {
-          myTriangle[0] = i;
-          myTriangle[1] = j;
-          myTriangle[2] = k;
-          break;
+          triangle[count].i = i;
+          triangle[count].j = j;
+          triangle[count].k = k;
+          count++;
         }
       }
     }
   }
+  return count;
 }
-
-
-
-/*
-
-void findTriangle(float* triangle, myDistance* dist, clusterMean* newCluster, clusterMean* oldCluster, int N) {
-  int index[2];
-
-
-  for (int i = 0; i < 2; i++) {
-    myDistance minimumDistance;
-    minimumDistance = dist[0];
-
-    for (int j = 1; j < N; j++) {
-      if (abs(dist[j].euclidian-triangle[i]) < abs(minimumDistance.euclidian-triangle[i])) {
-        minimumDistance = dist[j];
-      }
-    }
-
-    if (i == 0) {
-    newCluster[0].distance = oldCluster[minimumDistance.i].distance;
-    newCluster[0].angle = oldCluster[minimumDistance.i].angle;
-
-    newCluster[1].distance = oldCluster[minimumDistance.j].distance;
-    newCluster[1].angle = oldCluster[minimumDistance.j].angle;
-    
-    index[0] = minimumDistance.i;
-    index[1] = minimumDistance.j;
-    }
-    else if (i == 1) {
-      if ((minimumDistance.i == index[0]) || (minimumDistance.i == index[1])) {
-        newCluster[2].distance = oldCluster[minimumDistance.j].distance;
-        newCluster[2].angle = oldCluster[minimumDistance.j].angle;
-
-      }
-      else if ((minimumDistance.j == index[0]) || (minimumDistance.j == index[1])) {
-        newCluster[2].distance = oldCluster[minimumDistance.i].distance;
-        newCluster[2].angle = oldCluster[minimumDistance.i].angle;
-
-      }
-    }
-  }
-  */
-
-
-
-/*
-    if (i == 0) {
-      newCluster[0].distance = oldCluster[minimumDistance.i].distance;
-      newCluster[0].angle = oldCluster[minimumDistance.i].angle;
-
-      oldCluster[minimumDistance.i].distance = 0.0;
-      oldCluster[minimumDistance.i].angle = 0.0;
-
-      newCluster[1].distance = oldCluster[minimumDistance.j].distance;
-      newCluster[1].angle = oldCluster[minimumDistance.j].angle;
-
-      oldCluster[minimumDistance.j].distance = 0.0;
-      oldCluster[minimumDistance.j].angle = 0.0;
-    }
-    else if (i == 1) {
-      newCluster[3].distance = oldCluster[minimumDistance.j].distance;
-      newCluster[3].angle = oldCluster[minimumDistance.j].angle;
-    }
-    
-*/
-
-  
-
-
-
-/*
-    if (i == 0) {
-      newCluster[0].distance = oldCluster[minimumDistance.i].distance;
-      newCluster[0].angle = oldCluster[minimumDistance.i].angle;
-
-      newCluster[1].distance = oldCluster[minimumDistance.j].distance;
-      newCluster[1].angle = oldCluster[minimumDistance.j].angle;
-
-      index[0] = minimumDistance.i;
-      index[1] = minimumDistance.j;
-    }
-    else if (i == 1) {
-      if ( !(minimumDistance.i == index[0]) || !(minimumDistance.i == index[1])) {
-        newCluster[2].distance = oldCluster[minimumDistance.i].distance;
-        newCluster[2].angle = oldCluster[minimumDistance.i].angle;
-      }
-      else if (!(minimumDistance.j == index[0]) || !(minimumDistance.j == index[1])) {
-        newCluster[2].distance = oldCluster[minimumDistance.j].distance;
-        newCluster[2].angle = oldCluster[minimumDistance.j].angle;
-      }
-      else {
-        newCluster[2].distance = 10.0;
-        newCluster[2].angle = 10.0;
-      }
-    }
-  }
-  */
