@@ -51,7 +51,7 @@ ax = plt.subplot(111, projection='polar')
 ax.scatter(np.radians(angles_brut), distances_brut,s=5)  # Convert angles to radians
 ax.scatter(np.radians(angles_mean), distances_mean,s=20)  # Convert angles to radians
 ax.scatter(np.radians(angles_beacon), distances_beacon,s=50, color='black')  # Convert angles to radians
-ax.scatter(np.radians(angles_beacon1), distances_beacon1,s=50, color='blue')  # Convert angles to radians
+#ax.scatter(np.radians(angles_beacon1), distances_beacon1,s=50, color='blue')  # Convert angles to radians
 
 ax.set_theta_zero_location('N')  # Set 0 degrees to North
 ax.set_title('LiDAR Data on Polar Plot')

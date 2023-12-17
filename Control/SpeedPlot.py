@@ -1,22 +1,3 @@
-'''
-import numpy as np 
-import matplotlib.pyplot as plt
-
-    # Lecture du fichier et conversion des lignes en entiers
-with open("Speed.txt", 'r') as file:
-    content = file.readlines()
-    integers_list = [int(line.strip()) for line in content]
-
-# Conversion de la liste d'entiers en une NumPy array
-list = np.array(integers_list)
-t = np.linspace(0,10,len(list))
-
-file.close()
-print(list)
-
-plt.plot(t,list)
-plt.show()
-'''
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -24,7 +5,7 @@ import pandas as pd
 
 
 # Lecture des données avec Pandas
-data1 = pd.read_csv("Control/Speed.txt", sep=',', header=None, decimal='.', names=['left', 'right'])
+data1 = pd.read_csv("Data/Speed2.txt", sep=',', header=None, decimal='.', names=['left', 'right'])
 
 X1 = np.nan_to_num(data1, nan=0)
 
