@@ -3,11 +3,17 @@ import numpy as np
 import pandas as pd
 
 # Définir le nom de fichier
+'''
 MEAN = 'DataM/LidarMeanM0.txt'
 BRUT = 'DataM/LidarClustM0.txt'
 BEACON = 'DataM/LidarBalise0.txt'
 BEACON1 = 'DataM/LidarBalise1.txt'
+'''
 
+MEAN = 'DataL/LidarMeanL0.txt'
+BRUT = 'DataL/LidarClustL0.txt'
+BEACON = 'DataL/LidarBaliseL0.txt'
+BEACON1 = 'DataL/LidarBaliseL1.txt'
 
 # Définir le motif de délimiteur basé sur l'expression régulière
 #delimiteur_pattern = r'\s*theta: | Dist: | Q: '
